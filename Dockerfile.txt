@@ -1,0 +1,20 @@
+FROM alpine:3.18
+
+RUN apk --no-cache --update --available upgrade && \
+    apk add --no-cache ncurses-libs openssl1.1-compat libstdc++ jq curl bash snappy-dev nano && \
+    addgroup --gid 10000 vernemq && \
+    adduser --uid 10000 -H -D -G vernemq -h /vernemq vernemq && \
+    install -d -o vernemq -g vernemq /vernemq
+
+RUN apk add erlang erlang-dev git build-base    
+
+# Defaults
+ENV DOCKER_VERNEMQ_KUBERNETES_LABEL_SELECTOR="app=vernemq" \
+    DOCKER_VERNEMQ_LOG__CONSOLE=libconsole \
+    PATH="/vernemq/bin:$PATH" \
+    VERNEMQ_VERSION="1.13.0"
+WORKDIR /vernemq
+COPY --chown=10000:10000 . .
+#COPY --chown=10000:10000 bin/vernemq.sh /usr/sbin/start_vernemq
+#COPY --chown=10000:10000 files/vm.args /vernemq/etc/vm.args
+CMD [ "sleep", "infinity" ]
