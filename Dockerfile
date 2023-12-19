@@ -76,5 +76,5 @@ HEALTHCHECK CMD vernemq ping | grep -q pong
 USER vernemq
 
 # Changed: use the path to the script here rather than a symlink
-CMD ["start_vernemq"]
+CMD ["sh","/usr/sbin/start_vernemq"]
 
