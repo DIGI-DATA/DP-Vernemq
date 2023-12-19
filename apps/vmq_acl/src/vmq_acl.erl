@@ -93,7 +93,8 @@ auth_on_subscribe(User, SubscriberId, [{Topic, _Qos} | Rest]) ->
 auth_on_publish(User, SubscriberId, _, Topic, _, _) ->
     case check(write, Topic, User, SubscriberId) of
         true ->
-            ok;
+            {MP, ClientId} = SubscriberId,
+            {ok, [{topic, [ClientId, User | Topic]}]};
         false ->
             next
     end.
