@@ -46,7 +46,7 @@ ENV DOCKER_VERNEMQ_KUBERNETES_LABEL_SELECTOR="app=vernemq" \
 WORKDIR /vernemq
 
 # Changed: removed COPY commands, replaced by CURL downloads above
-COPY --chown=10000:10000 bin/vernemq.sh /usr/sbin/start_vernemq
+COPY --chown=10000:10000 bin/start_vernemq /usr/sbin/start_vernemq
 COPY --chown=10000:10000 files/vm.args /vernemq/etc/vm.args
 # Changed: The following line was added to the original Dockerfile.alpine
 COPY --chown=10000:10000 --from=build /vernemq /vernemq
@@ -56,7 +56,6 @@ RUN ln -s /vernemq/etc /etc/vernemq && \
     ln -s /vernemq/data /var/lib/vernemq && \
     ln -s /vernemq/log /var/log/vernemq
 
-RUN chmod +x  /usr/sbin/start_vernemq
 # Ports
 # 1883  MQTT
 # 8883  MQTT/SSL
@@ -77,5 +76,5 @@ HEALTHCHECK CMD vernemq ping | grep -q pong
 USER vernemq
 
 # Changed: use the path to the script here rather than a symlink
-CMD ["/usr/sbin/start_vernemq"]
+CMD ["start_vernemq"]
 
