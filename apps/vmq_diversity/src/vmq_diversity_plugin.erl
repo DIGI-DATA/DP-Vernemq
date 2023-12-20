@@ -514,7 +514,6 @@ on_register(Peer, SubscriberId, UserName) ->
 
 on_publish(UserName, SubscriberId, QoS, Topic, Payload, IsRetain) ->
     {MP, ClientId} = subscriber_id(SubscriberId),
-    error_logger:info_msg("realmq: on_deliver: Internal topic: ~p", [Topic]),
     all(on_publish, [
         {username, nilify(UserName)},
         {mountpoint, MP},
