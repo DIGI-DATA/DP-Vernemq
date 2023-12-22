@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - "test-vernemq"
+            - "main"
 
 env:
     image: digieye-vernemq-binary
