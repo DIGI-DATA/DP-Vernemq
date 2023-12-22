@@ -14,7 +14,7 @@ RUN \
     openssl-dev \
     tzdata
 
-RUN git clone https://github.com/DIGI-DATA/DP-Vernemq.git \
+RUN git clone --branch test-vernemq https://github.com/DIGI-DATA/DP-Vernemq.git \
       /usr/src/vernemq
 
 RUN cd /usr/src/vernemq && \
