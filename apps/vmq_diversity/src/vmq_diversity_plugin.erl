@@ -264,6 +264,8 @@ on_register_m5(Peer, SubscriberId, Username, Props) ->
 
 auth_on_publish(UserName, SubscriberId, QoS, Topic, Payload, IsRetain) ->
     {MP, ClientId} = subscriber_id(SubscriberId),
+    error_logger:info_msg("realmq: on_deliver: Internal topic: ~p", [Topic]),
+    error_logger:info_msg("realmq: on_deliver: Internal topic: ~p", [unword(Topic)]),
     case vmq_diversity_cache:match_publish_acl(MP, ClientId, QoS, Topic, Payload, IsRetain) of
         true ->
             %% Found a valid cache entry which grants this publish
@@ -513,7 +515,7 @@ on_register(Peer, SubscriberId, UserName) ->
     ]).
 
 on_publish(UserName, SubscriberId, QoS, Topic, Payload, IsRetain) ->
-    {MP, ClientId} = subscriber_id(SubscriberId),
+    {MP, ClientId} = subscriber_id(SubscriberId),error_logger:info_msg("realmq: on_deliver: Internal topic: ~p", [Topic]),
     all(on_publish, [
         {username, nilify(UserName)},
         {mountpoint, MP},
