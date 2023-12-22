@@ -62,5 +62,5 @@ runs:
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
         tags: ${{ inputs.tags }}
-        # cache-from: type=gha
-        # cache-to: type=gha,mode=max
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
