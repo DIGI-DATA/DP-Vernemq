@@ -888,18 +888,18 @@ auth_on_subscribe(User, SubscriberId, Topics, AuthSuccess) ->
     of
         ok ->
             %UpdatedMsg = Msg#vmq_msg{routing_key = NewTopic},
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : UserName ~p~n", [User]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : SubscriberId ~p~n", [SubscriberId]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : Topics ~p~n", [Topics]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : UserName ~p~n", [User]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : SubscriberId ~p~n", [SubscriberId]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : Topics ~p~n", [Topics]),
             {ListTopics, _} = hd(Topics),
             {_, Qos} = hd(Topics),
             {_, ClientId} = SubscriberId,
         
             NewListTopics = [{check_for_hash(ListTopics,ClientId,User),Qos}], 
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : ListTopics ~p~n", [ListTopics]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : Qos ~p~n", [Qos]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : ClientId ~p~n", [ClientId]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : NewListTopics ~p~n", [NewListTopics]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : ListTopics ~p~n", [ListTopics]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : Qos ~p~n", [Qos]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : ClientId ~p~n", [ClientId]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : NewListTopics ~p~n", [NewListTopics]),
             %AuthSuccess(User, SubscriberId, Topics);
             AuthSuccess(User, SubscriberId, NewListTopics);
         {ok, NewTopics} when is_list(NewTopics) ->
@@ -909,16 +909,15 @@ auth_on_subscribe(User, SubscriberId, Topics, AuthSuccess) ->
     end.
 
 
-check_for_hash(ListTopics,_ClientId,_User) ->
+check_for_hash(ListTopics,ClientId,User) ->
     case lists:member(<<"#">>, ListTopics) of
         true ->
-            %io:format("ListTopics contains #~n"), 
-            %%ListTopics;
-            [<<"+">>,<<"+">>] ++ ListTopics;
+            io:format("ListTopics contains #~n"), 
+            ListTopics;
         false ->
-            %io:format("ListTopics does not contain #~n"),
-            %%[ClientId,User] ++ ListTopics
-            [<<"+">>,<<"+">>] ++ ListTopics
+            io:format("ListTopics does not contain #~n"),
+            [ClientId,User] ++ ListTopics
+            
     end.
 
 -spec unsubscribe(

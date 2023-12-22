@@ -18,5 +18,5 @@ plts_base/
 .tool-versions
 
 data/
+.idea/
 
-k8s/

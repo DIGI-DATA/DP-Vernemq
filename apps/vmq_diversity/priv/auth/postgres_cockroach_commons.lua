@@ -142,6 +142,7 @@ function auth_on_register_common(db_library, reg)
             reg.password)
          if #results == 1 then
             row = results[1]
+            print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common called {row:',row,'}')
             cache_result(reg, row)
             return true
          else
@@ -168,6 +169,8 @@ end
 function cache_result(reg, row)
    publish_acl = json.decode(row.publish_acl)
    subscribe_acl = json.decode(row.subscribe_acl)
+   print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',row.publish_acl,',subscribe_acl:',row.subscribe_acl,'}')
+   print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',publish_acl,',subscribe_acl:',subscribe_acl,'}')
    cache_insert(
       reg.mountpoint,
       reg.client_id,
