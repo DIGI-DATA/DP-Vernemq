@@ -92,6 +92,7 @@
 function auth_on_register_common(db_library, reg)
    local client_id = reg.client_id
    local mqttScaleWildcardPattern = os.getenv("MULTI_CLIENTS_WILDCARD_PATTERN") or 'dpc%-mqtt%-kafka%-.+'
+   print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common {mqttScaleWildcardPattern:',mqttScaleWildcardPattern,'}')
    if string.match(client_id, mqttScaleWildcardPattern) then
       print('String matches the wildcard expression!')
       client_id = mqttScaleWildcardPattern 
@@ -133,8 +134,8 @@ function auth_on_register_common(db_library, reg)
          else
             return false
          end
-         --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common old clientidled {client_id:',reg.client_id,'}')
-         --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common new clientidled {client_id:',client_id,'}')
+         print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common old clientidled {client_id:',reg.client_id,'}')
+         print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common new clientidled {client_id:',client_id,'}')
          results = db_library.execute(
             pool,
             [[SELECT publish_acl::TEXT, subscribe_acl::TEXT
