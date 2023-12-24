@@ -910,11 +910,10 @@ auth_on_subscribe(User, SubscriberId, Topics, AuthSuccess) ->
 
 
 check_for_hash(ListTopics,_ClientId,_User) ->
-    case lists:member(<<"#">>, ListTopics) of
+    case lists:member(<<"$share">>, ListTopics) of
         true ->
-            %io:format("ListTopics contains #~n"), 
-            %%ListTopics;
-            [<<"+">>,<<"+">>] ++ ListTopics;
+            %io:format("ListTopics contains #~n"),
+            ListTopics;
         false ->
             %io:format("ListTopics does not contain #~n"),
             %%[ClientId,User] ++ ListTopics
