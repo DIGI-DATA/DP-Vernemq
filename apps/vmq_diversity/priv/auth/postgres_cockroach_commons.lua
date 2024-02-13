@@ -89,14 +89,31 @@
 --
 -- IF YOU USE THE SCHEMA PROVIDED ABOVE NOTHING HAS TO BE CHANGED IN THE
 -- FOLLOWING SCRIPT.
-function auth_on_register_common(db_library, reg)
-   local client_id = reg.client_id
-   local mqttScaleWildcardPattern = os.getenv("MULTI_CLIENTS_WILDCARD_PATTERN") or 'dpc%-mqtt%-kafka%-.+'
-   --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common {mqttScaleWildcardPattern:',mqttScaleWildcardPattern,'}')
-   if string.match(client_id, mqttScaleWildcardPattern) then
-      --print('String matches the wildcard expression!')
-      client_id = mqttScaleWildcardPattern 
+function check_client_id(client_id)
+   local new_client_id = client_id
+   local MULTI_CLIENTS_PATTERNS = os.getenv("MULTI_CLIENTS_PATTERNS") or 'dpc%-mqtt%-kafka%-.+,dpc%-kafka%-mqtt%-.+'
+   local patterns = split(MULTI_CLIENTS_PATTERNS,",")
+  
+   for _, pattern in ipairs(patterns) do 
+      if string.match(new_client_id, pattern) then
+         new_client_id = pattern
+         break
+      end
    end
+   return new_client_id
+end   
+
+function split(str, delimiter)
+    local result = {}
+    local pattern = string.format("([^%s]+)", delimiter)
+    str:gsub(pattern, function(match)
+        table.insert(result, match)
+    end)
+    return result
+end
+
+function auth_on_register_common(db_library, reg)
+   local client_id = check_client_id(reg.client_id)
    method = db_library.hash_method()
    if reg.username ~= nil and reg.password ~= nil then
       if client_side_hashing(method) then
@@ -134,11 +151,11 @@ function auth_on_register_common(db_library, reg)
          else
             return false
          end
-         print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common old clientidled {client_id:',reg.client_id,'}')
-         print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common new clientidled {client_id:',client_id,'}')
+         --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common old clientidled {client_id:',reg.client_id,'}')
+         --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] auth_on_register_common new clientidled {client_id:',client_id,'}')
          results = db_library.execute(
             pool,
-            [[SELECT publish_acl::TEXT, subscribe_acl::TEXT
+            [[SELECT publish_acl::TEXT, subscribe_acl::TEXT, serial
               FROM vmq_auth_acl
               WHERE
                 mountpoint=$1 AND
@@ -179,12 +196,13 @@ function cache_result(reg, row)
    publish_acl = json.decode(row.publish_acl)
    subscribe_acl = json.decode(row.subscribe_acl)
    --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',row.publish_acl,',subscribe_acl:',row.subscribe_acl,'}')
-   --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',publish_acl,',subscribe_acl:',subscribe_acl,'}')
+   print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',row.publish_acl,',subscribe_acl:',row.subscribe_acl,',serial:',row.serial,'}')
    cache_insert(
       reg.mountpoint,
       reg.client_id,
       reg.username,
       publish_acl,
-      subscribe_acl)
+      subscribe_acl,
+      row.serial
+   )
 end
-
