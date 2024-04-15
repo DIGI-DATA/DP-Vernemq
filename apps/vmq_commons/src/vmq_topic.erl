@@ -54,20 +54,31 @@ new(Name) when is_list(Name) ->
 %% ------------------------------------------------------------------------
 %% topic match
 %% ------------------------------------------------------------------------
+% match([], []) ->
+%     true;
+% match([H | T1], [H | T2]) ->
+%     match(T1, T2);
+% match([_H | T1], [<<"+">> | T2]) ->
+%     match(T1, T2);
+% match(_, [<<"#">>]) ->
+%     true;
+% match([_H1 | _], [_H2 | _]) ->
+%     false;
+% match([], [_H | _T2]) ->
+%     false;
+% match(_, _) ->
+%     false.
+
 match([], []) ->
     true;
-match([H | T1], [H | T2]) ->
-    match(T1, T2);
-match([_H | T1], [<<"+">> | T2]) ->
-    match(T1, T2);
-match(_, [<<"#">>]) ->
-    true;
-match([_H1 | _], [_H2 | _]) ->
-    false;
-match([], [_H | _T2]) ->
-    false;
+match([H1 | T1], [H2 | T2]) when is_binary(H1), is_binary(H2) ->
+    match_atom(H1, H2) andalso match(T1, T2);
 match(_, _) ->
     false.
+match_atom(Atom1, Atom2) ->
+    Lowercase1 = string:to_lower(binary_to_list(Atom1)),
+    Lowercase2 = string:to_lower(binary_to_list(Atom2)),
+    Lowercase1 == Lowercase2.
 
 %% ------------------------------------------------------------------------
 %% topic validate
