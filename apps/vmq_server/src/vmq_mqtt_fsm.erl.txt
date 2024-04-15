@@ -887,37 +887,14 @@ auth_on_subscribe(User, SubscriberId, Topics, AuthSuccess) ->
         )
     of
         ok ->
-            %UpdatedMsg = Msg#vmq_msg{routing_key = NewTopic},
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : UserName ~p~n", [User]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : SubscriberId ~p~n", [SubscriberId]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : Topics ~p~n", [Topics]),
-            {ListTopics, _} = hd(Topics),
-            {_, Qos} = hd(Topics),
-            {_, ClientId} = SubscriberId,
-        
-            NewListTopics = [{check_for_hash(ListTopics,ClientId,User),Qos}], 
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : ListTopics ~p~n", [ListTopics]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : Qos ~p~n", [Qos]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : ClientId ~p~n", [ClientId]),
-            %io:format("vmq_mqtt_fsm auth_on_subscribe : NewListTopics ~p~n", [NewListTopics]),
-            %AuthSuccess(User, SubscriberId, Topics);
-            AuthSuccess(User, SubscriberId, NewListTopics);
+            io:format("vmq_mqtt_fsm auth_on_subscribe : UserName ~p~n", [User]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : SubscriberId ~p~n", [SubscriberId]),
+            io:format("vmq_mqtt_fsm auth_on_subscribe : Topics ~p~n", [Topics]),
+            AuthSuccess(User, SubscriberId, Topics);
         {ok, NewTopics} when is_list(NewTopics) ->
             AuthSuccess(User, SubscriberId, NewTopics);
         {error, _} ->
             {error, not_allowed}
-    end.
-
-
-check_for_hash(ListTopics,_ClientId,_User) ->
-    case lists:member(<<"$share">>, ListTopics) of
-        true ->
-            %io:format("ListTopics contains #~n"),
-            ListTopics;
-        false ->
-            %io:format("ListTopics does not contain #~n"),
-            %%[ClientId,User] ++ ListTopics
-            [<<"+">>,<<"+">>] ++ ListTopics
     end.
 
 -spec unsubscribe(
@@ -1019,6 +996,7 @@ publish(CAPSettings, RegView, User, {_, ClientId} = SubscriberId, Msg) ->
         SubscriberId,
         Msg,
         fun(MaybeChangedMsg, HookArgs, SessCtrl) ->
+            io:format("vmq_mqtt_fsm publish : MaybeChangedMsg ~p~n", [MaybeChangedMsg]),
             case
                 on_publish_hook(
                     vmq_reg:publish(

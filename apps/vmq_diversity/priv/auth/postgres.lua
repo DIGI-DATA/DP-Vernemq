@@ -30,9 +30,22 @@ config = {
 }
 
 postgres.ensure_pool(config)
+
+function my_auth_on_publish(pub)
+    print("auth_on_publish changed called")
+    print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] my_auth_on_publish called {pub:',pub,'}')
+    if auth_on_publish(pub) == true then
+        print("auth_on_publish changed called")
+        return {topic = "hello/world"}
+    else
+        -- we must change properties
+        return auth_on_publish(pub)
+    end
+end
+
 hooks = {
     auth_on_register = auth_on_register,
-    auth_on_publish = auth_on_publish,
+    auth_on_publish = my_auth_on_publish,
     auth_on_subscribe = auth_on_subscribe,
     on_unsubscribe = on_unsubscribe,
     on_client_gone = on_client_gone,

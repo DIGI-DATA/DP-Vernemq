@@ -90,13 +90,14 @@ auth_on_subscribe(User, SubscriberId, [{Topic, _Qos} | Rest]) ->
             next
     end.
 
-auth_on_publish(User, SubscriberId, _, Topic, _, _) ->
+auth_on_publish(User, {_MountPoint, ClientId} = SubscriberId, _, Topic, _, _) ->
     case check(write, Topic, User, SubscriberId) of
         true ->
-            ok;
+            {ok, [{topic, [ClientId, User | Topic]}]};
         false ->
             next
     end.
+
 
 auth_on_subscribe_m5(User, SubscriberId, Topics, _Props) ->
     auth_on_subscribe(User, SubscriberId, Topics).
