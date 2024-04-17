@@ -194,9 +194,7 @@ end
 
 function cache_result(reg, row)
    publish_acl = json.decode(row.publish_acl)
-   subscribe_acl = json.decode(row.subscribe_acl)
-   --print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',row.publish_acl,',subscribe_acl:',row.subscribe_acl,'}')
-   print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] cache_result called {publish_acl:',row.publish_acl,',subscribe_acl:',row.subscribe_acl,',serial:',row.serial,'}')
+   subscribe_acl = json.decode(row.subscribe_acl) 
    cache_insert(
       reg.mountpoint,
       reg.client_id,

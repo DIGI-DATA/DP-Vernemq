@@ -32,10 +32,7 @@ config = {
 postgres.ensure_pool(config)
 
 function my_auth_on_publish(pub)
-    print("auth_on_publish changed called")
-    print(os.date('%Y-%m-%d %H:%M:%S'),'[Info] my_auth_on_publish called {pub:',pub,'}')
     if auth_on_publish(pub) == true then
-        print("auth_on_publish changed called")
         return {topic = "hello/world"}
     else
         -- we must change properties
